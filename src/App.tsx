@@ -10,8 +10,8 @@ function App() {
           <Accordion.Body>
             {faqData.map((item) => (
               <Accordion.Item key={item.id} id={item.id}>
-                <Accordion.Header id={item.id}>{item.header}</Accordion.Header>
-                <Accordion.Content id={item.id}>{item.body}</Accordion.Content>
+                <Accordion.Header>{item.header}</Accordion.Header>
+                <Accordion.Content>{item.body}</Accordion.Content>
               </Accordion.Item>
             ))}
           </Accordion.Body>

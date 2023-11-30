@@ -7,11 +7,17 @@ interface AccordionContextType {
   isOpen: (id: number) => boolean;
 }
 
+interface AccordionItemContextType {
+  id: number;
+}
+
 const AccordionContext = createContext<AccordionContextType>({
   openIds: [],
   toggle: () => {},
   isOpen: (id) => (id ? true : false),
 });
+
+const AccordionItemContext = createContext<AccordionItemContextType | null>(null);
 
 function Accordion({ children }: { children: React.ReactNode }) {
   const [openIds, setOpenIds] = useState<number[]>([]);
@@ -46,15 +52,19 @@ Accordion.Body = function Body({ children }: { children: React.ReactNode }) {
 
 Accordion.Item = function Item({ id, children }: { id: number; children: React.ReactNode }) {
   const { toggle } = useContext(AccordionContext);
+
   return (
-    <article onClick={() => toggle(id)} className="w-full bg-slate-600 text-white text-center rounded">
-      {children}
-    </article>
+    <AccordionItemContext.Provider value={{ id }}>
+      <article onClick={() => toggle(id)} className="w-full bg-slate-600 text-white text-center rounded">
+        {children}
+      </article>
+    </AccordionItemContext.Provider>
   );
 };
 
-Accordion.Header = function Header({ id, children }: { id: number; children: React.ReactNode }) {
+Accordion.Header = function Header({ children }: { children: React.ReactNode }) {
   const { isOpen } = useContext(AccordionContext);
+  const { id } = useContext(AccordionItemContext)!;
 
   return (
     <div className="py-2 cursor-pointer relative">
@@ -68,8 +78,9 @@ Accordion.Header = function Header({ id, children }: { id: number; children: Rea
   );
 };
 
-Accordion.Content = function Content({ id, children }: { id: number; children: React.ReactNode }) {
+Accordion.Content = function Content({ children }: { children: React.ReactNode }) {
   const { isOpen } = useContext(AccordionContext);
+  const { id } = useContext(AccordionItemContext)!;
 
   return (
     <div
